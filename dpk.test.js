@@ -5,11 +5,18 @@ describe("deterministicPartitionKey", () => {
     const trivialKey = deterministicPartitionKey();
     expect(trivialKey).toBe("0");
   });
-  it("Returns the literal '0' when input is not valid object", () => {
-    const invalidValues = [0, 55, NaN, [], {}, "", null, () => {}];
+  it("Returns the literal '0' when input is falsy", () => {
+    const invalidValues = [false, 0, NaN, "", null];
     invalidValues.forEach((invalidValue) => {
       const trivialKey = deterministicPartitionKey(invalidValue);
       expect(trivialKey).toBe("0");
+    });
+  });
+  it("Returns the corresponding partitionKey when input is truthy", () => {
+    const invalidValues = [55, [], {}];
+    invalidValues.forEach((invalidValue) => {
+      const trivialKey = deterministicPartitionKey(invalidValue);
+      expect(trivialKey).toBeTruthy();
     });
   });
   it("Returns the corresponding partitionKey for valid input", () => {

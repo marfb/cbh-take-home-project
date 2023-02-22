@@ -9,3 +9,38 @@ You've been asked to refactor the function `deterministicPartitionKey` in [`dpk.
 You will be graded on the exhaustiveness and quality of your unit tests, the depth of your refactor, and the level of insight into your thought process provided by the written explanation.
 
 ## Your Explanation Here
+
+### Refactor explanation 1: What I found.
+
+First I tryied to understand what was the biggest problem for me when reading the code defined in the file `dpk.js`. This is what give me an idea of what is the main or most important thing I must work on but not the first. This is because sometimes if you focus only in the bigger problem you may loose the opportunity to improve other little things that makes code simpler and better. So, the bigger and most annoying problem I found was the `if/else` blocks.
+Trying to save those blocks for later I realize that there were other things that were little but can improve readability:
+
+- No simple validation of event value to fast return when an invalid value is received.
+- Constants defined within the function body that may be defined outside to be reused
+- let variable (this is not necessarily a problem to solve, but in my experience reasignment can be tricky to mantain)
+
+Also to understand how the function works I test it with some inputs that I save for future tests definition.
+
+### Refactor explanation 2: One problem at a time
+
+Once I identify all the things that can be improved in terms of readability and mantainability of base code I started to refactor the function. But obviously not all at once but one problem at a time.
+
+- Move constants definition: The first win. I move constants definition outside function block and run tests. Everything went well.
+- Simple validation: First I added a default value as an object and a validation to return 0 if received event is not of `Object` type. I continued with the refactor but when all the new tests were added I realized that some truthy values were considered as empty or falsy values as the function also returned 0. So then I decided not to set a default value but to validate if event was falsy. In that case I return 0 otherwise the code will continue.
+- let variable: Well this was directly related to the `if/else` problem so lets move to directly to the explanation
+
+### Refactor explanation 3: Bye bye if/else blocks
+
+In order to understand if that `let candidate;` was a good pattern I need to understand what was happening inside those `if/else` blocks.
+First thing that came up to me is that a type check was beeing made and a **helper function** was going to be a good tool, so I created it. Now that I can use my function to validate I knew that those type checks could be simplified.
+
+I also noticed that in case event was an object what the function does is to use the key partitionKey otherwise it coerces the event value to a string and use the crypto functions to create the hash so I use destructuring feature to access the value of the event in case it was an object but I combined it with a default value in case event was not an object or **partitionKey** was not a key.
+
+Now that I'm sure that **partitionKey** is defined I can shortcircuit the **candidate** variable (now a `const`) to be **partitionKey** or the strigified value of **event**
+Now in case that **partitionKey** was not a string but other truthy value I created the auxiliary variable **stringifiedCandidate** using a ternary expression to evaluate that and in the clause false I convert **candidate** to a string.
+
+For readability improvements I created another auxiliary variable named **hashFromCandidate** where I assign the execution of the crypto methods using **stringifiedCandidate**
+
+Finally I returned **hashFromCandidate**.
+
+I found that that the constant MAX_PARTITION_KEY_LENGTH was used only when candidate was assigned the strigified value of event when event didn't have partitionKey. In my mplementation I believe this is not necessary.
