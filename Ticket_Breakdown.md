@@ -53,10 +53,6 @@ This information can be retrieved from the table Facility_Agent selecting the re
 
 Whenever this function is executed the new field **facilityAgentId** must be included. In case that for the required **facilityId** and **agentId** there is no registry at the Facility_Agent table, return empty string in the field
 
-**Acceptance criteria**
-When user from facility without custom agent id generates shift report => internal database agent id is shown at the Agent ID column
-When user from facility with custom agent id generates shift report => custom agent ID is shown at the Agent ID column
-
 **Suggested story points**
 3
 
@@ -71,9 +67,10 @@ Update function `generateReport` to include the **facilityAgentId** fo the agent
 In case **facilityAgentId** is empty keep printing internal database agent ID.
 
 **Acceptance criteria**
-When user from facility without custom agent id generates shift report => internal database agent id is shown at the Agent ID column
-When user from facility with custom agent id generates shift report => custom agent ID is shown at the Agent ID column
-When report is generated for shifts where the same agent was assigned but in different facilities, and in one facility that agent does have a custom ID but in the other facility he doesn't have custom ID => the reports show differents IDs for the same agent in different facilities.
+
+- When user from facility without custom agent id generates shift report => internal database agent id is shown at the Agent ID column
+- When user from facility with custom agent id generates shift report => custom agent ID is shown at the Agent ID column
+- When report is generated for shifts where the same agent was assigned but in different facilities, and in one facility that agent does have a custom ID but in the other facility he doesn't have custom ID => the reports show differents IDs for the same agent in different facilities.
 
 **Suggested story points**
 1
